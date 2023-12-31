@@ -32,7 +32,7 @@ pipeline {
             }
         }
 
-        stage('Docker Run') {
+        stage('Docker Run and also nginx to reversy proxy the ip') {
             steps {
                 script {
                     // credentialsId usernameand password added in docker
