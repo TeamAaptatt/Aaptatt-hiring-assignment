@@ -46,9 +46,10 @@ pipeline {
         stage('Docker Run') {
             steps {
                 script {
-                    // Docker run step
-                    // Run the Docker container in detached mode, mapping port 8088 to 8080
-                    sh 'docker run -p 8088:8080 -d tomcat:v1'
+                    // Change to the project directory and run Docker Compose
+                    dir('/var/lib/jenkins/workspace/aatatt/kishor-naik-Aaptatt-hiring-assignment') {
+                        sh 'docker-compose up -d'
+                    }
                 }
             }
         }
