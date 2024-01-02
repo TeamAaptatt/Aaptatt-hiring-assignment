@@ -5,15 +5,4 @@ services:
     image: reddykiram52/tomcat:v1
     ports:
       - "8282:8080"
-    networks:
-      - my_network
-
-  nginx:
-    image: reddykiram52/my-nginx:v1
-    ports:
-      - "80:80"
-    networks:
-      - my_network
-
-networks:
-  my_network:
+    
