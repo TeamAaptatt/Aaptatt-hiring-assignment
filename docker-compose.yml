@@ -1,8 +1,15 @@
 version: '3'
-
 services:
-  tomcat:
-    image: reddykiram52/tomcat:v1
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
     ports:
-      - "8282:8080"
-    
+      - "80:80"
+
+  tomcat:
+    build:
+      context: .
+      dockerfile: Dockerfile-tomcat
+    ports:
+      - "8081:8080"
