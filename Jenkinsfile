@@ -1,57 +1,40 @@
 pipeline {
     agent any
 
+    tools {
+        maven "maven"
+    }
+
     stages {
-        stage('Clone') {
+        stage('Build GitHub repository') {
+            steps {
+                git 'https://github.com/mkishornaik52/kishor-naik-Aaptatt-hiring-assignment.git'
+
+                // Run Maven
+                sh "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+        }
+        stage('Build Docker Images') {
             steps {
                 script {
-                    deleteDir()
-                    sh 'git clone https://github.com/Reddykiram52/kishor-naik-Aaptatt-hiring-assignment.git'
-                    sh 'pwd'
+                    sh 'docker-compose build'
+                    sh 'docker-compose down'
                 }
             }
         }
-
-        stage('Maven Build') {
+        stage('Run Docker Containers') {
             steps {
                 script {
-                    dir('kishor-naik-Aaptatt-hiring-assignment') {
-                        sh 'mvn clean package'
-                    }
+                    sh 'docker-compose down'
+                    sh 'docker-compose up -d'
                 }
             }
         }
-
-        stage('Docker Build') {
-            steps {
-                script {
-                    dir('kishor-naik-Aaptatt-hiring-assignment') {
-                        sh 'docker build -t tomcat:v1 .'
-                    }
-                }
-            }
-        }
-
-        stage('Docker Run and also nginx to reversy proxy the ip') {
-            steps {
-                script {
-                    // credentialsId usernameand password added in docker
-                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
-                        dir('kishor-naik-Aaptatt-hiring-assignment') {
-                            sh 'docker-compose down'
-                            sh 'docker-compose up -d'
-                        }
-                    }
-                }
-            }
-        }
-
         stage('Clone VM') {
             steps {
                 script {
                     withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
-                        sh 'docker tag tomcat:v1 reddykiram52/tomcat:v1'
-                        sh 'docker push reddykiram52/tomcat:v1'
+                        sh 'docker-compose push'
                     }
                 }
             }
